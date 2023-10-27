@@ -23,6 +23,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
-
+    Route::get('/profile/{user}', [ProfileController::class, 'show']);
+    Route::patch('/profile/{user}', [ProfileController::class, 'update']);
 });
-Route::get('/profile/{user}', [ProfileController::class, 'show']);
