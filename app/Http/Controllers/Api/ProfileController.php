@@ -50,7 +50,7 @@ class ProfileController extends Controller
     }
     public function update(User $user)
     {
-        $this->authorize('update', $user->profile);
+        // $this->authorize('update', $user->profile);
 
         $data = request()->validate(
             [
