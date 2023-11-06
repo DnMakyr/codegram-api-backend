@@ -17,8 +17,8 @@ class Profile extends Model
     ];
     //defaul avatar for new users
     public function profileImage()
-    {
-        $imagePath = ($this->image) ? $this->image : 'profile/7FpzVTsdK2HfGtCMd029qpMYxK3PblhUn3L2ZZWC.jpg';
+    {   
+        $imagePath = ($this->image) ? $this->image : 'users-avatar/anon.png';
         return '/storage/' . $imagePath;
     }
 

@@ -16,63 +16,43 @@ class ProfileController extends Controller
     {
         $follows = (auth()->user()) ? auth()->user()->following->contains($user->id) : false;
 
-        $postCount = Cache::remember(
-            'count.posts.' . $user->id,
-            now()->addSeconds(30),
-            function () use ($user) {
-                return $user->posts->count();
-            }
-        );
-        $followersCount = Cache::remember(
-            'count.followers.' . $user->id,
-            now()->addSeconds(30),
-            function () use ($user) {
-                return $user->profile->followers->count();
-            }
-        );
-        $followingCount = Cache::remember(
-            'count.following.' . $user->id,
-            now()->addSeconds(30),
-            function () use ($user) {
-                return $user->following->count();
-            }
-        );
+        $postCount = $user->posts->count();
+        $followersCount = $user->profile->followers->count();
+        $followingCount = $user->following->count();
 
-        return response()->json([
+        return [
             'user' => $user,
-            'profile' => $user->profile,
-            'posts' => $user->posts,
             'follows' => $follows,
             'postCount' => $postCount,
             'followersCount' => $followersCount,
             'followingCount' => $followingCount
-        ]);
+        ];
     }
     public function update(User $user)
     {
-        // $this->authorize('update', $user->profile);
+        if ($user->id === $user->profile->id) {
+            $data = request()->validate(
+                [
+                    'title' => '',
+                    'description' => '',
+                    'url' => '',
+                    'image' => '',
+                ]
+            );
 
-        $data = request()->validate(
-            [
-                'title' => '',
-                'description' => '',
-                'url' => '',
-                'image' => '',
-            ]
-        );
+            if (request('image')) {
+                $imagePath = (request('image')->store('profile', 'public'));
+                $image = Image::make(public_path("storage/{$imagePath}"));
+                $image->save();
+                $imageArray = ['image' => $imagePath];
+            }
 
-        if (request('image')) {
-            $imagePath = (request('image')->store('profile', 'public'));
-
-            $image = Image::make(public_path("storage/{$imagePath}"));
-            $image->save();
-            $imageArray = ['image' => $imagePath];
-        }
-
-        $user->profile->update(array_merge(
-            $data,
-            $imageArray ?? [],
-        ));
-
+            $user->profile->update(array_merge(
+                $data,
+                $imageArray ?? ['image' => $imagePath ?? 'users-avatar/anon.png'],
+            ));
+        } else return response()->json([
+            'message' => 'You are not authorized to perform this action'
+        ]);
     }
 }
