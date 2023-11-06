@@ -30,7 +30,7 @@ class ProfileController extends Controller
     }
     public function update(User $user)
     {
-        if ($user->id === $user->profile->id) {
+        if (auth()->user()->id === $user->profile->id) {
             $data = request()->validate(
                 [
                     'title' => '',
@@ -53,6 +53,6 @@ class ProfileController extends Controller
             ));
         } else return response()->json([
             'message' => 'You are not authorized to perform this action'
-        ]);
+        ], 403);
     }
 }
