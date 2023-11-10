@@ -21,8 +21,7 @@ class ProfileController extends Controller
         $followingCount = $user->following->count();
 
         return [
-            'user' => $user,
-            'follows' => $follows,
+            'user' => array_merge($user->toArray(), ['follows' => $follows]),
             'postCount' => $postCount,
             'followersCount' => $followersCount,
             'followingCount' => $followingCount
@@ -30,7 +29,7 @@ class ProfileController extends Controller
     }
     public function update(User $user)
     {
-        if (auth()->user()->id === $user->profile->id) {
+        if (auth()->user()->id === $user->id) {
             $data = request()->validate(
                 [
                     'title' => '',
@@ -49,8 +48,11 @@ class ProfileController extends Controller
 
             $user->profile->update(array_merge(
                 $data,
-                $imageArray ?? ['image' => $imagePath ?? 'users-avatar/anon.png'],
+                $imageArray ?? ['image'=>'users-avatar/anon.png'],
             ));
+            return response()->json([
+                'newAvatar' => $imageArray ?? ['image'=>'users-avatar/anon.png'],
+            ], 200);
         } else return response()->json([
             'message' => 'You are not authorized to perform this action'
         ], 403);

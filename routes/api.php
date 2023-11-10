@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\FollowController;
 use App\Http\Controllers\Api\FriendController;
 use App\Http\Controllers\Api\PostsController;
 use App\Http\Controllers\Api\ProfileController;
@@ -27,8 +28,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    
     Route::get('/profile/{user}', [ProfileController::class, 'show']);
     Route::post('/profile/{user}/update', [ProfileController::class, 'update']);
     Route::get('/dashboard', [PostsController::class, 'show']);
     Route::get('/recommend', [FriendController::class, 'suggest']);
+    Route::post('/post', [PostsController::class, 'store']);
+    Route::post('/follow/{user}', [FollowController::class, 'follow']);
 });

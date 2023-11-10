@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class PostsController extends Controller
 {
     //
-    public function show(Request $request)
+    public function show()
     {
         $users = auth()->user()->following()->pluck('profiles.user_id');
         $posts = Post::whereIn('user_id', $users)
@@ -37,5 +37,20 @@ class PostsController extends Controller
             'liked' => $liked,
             'likeCount' => $likeCount
         ];
+    }
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'caption' => 'required',
+            'image' => ['required', 'image'],
+        ]);
+        $imagePath = (request('image')->store('uploads', 'public'));
+        $image = \Intervention\Image\Facades\Image::make(public_path("storage/{$imagePath}"));
+        $image->save();
+
+        auth()->user()->posts()->create([
+            'caption' => $data['caption'],
+            'image' => $imagePath,
+        ]);
     }
 }
