@@ -36,3 +36,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/post', [PostsController::class, 'store']);
     Route::post('/follow/{user}', [FollowController::class, 'follow']);
 });
+
+Route::post('/friend/{user}', [FriendController::class, 'add']);
+Route::post('/friend/{user}/cancel', [FriendController::class, 'cancel']);
+Route::post('/friend/{user}/accept', [FriendController::class, 'accept']);
+Route::post('/friend/{user}/decline', [FriendController::class, 'decline']);
+Route::post('/friend/{user}/unfriend', [FriendController::class, 'unfriend']);
+

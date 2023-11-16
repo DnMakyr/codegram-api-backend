@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Friend;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -19,9 +20,18 @@ class ProfileController extends Controller
         $postCount = $user->posts->count();
         $followersCount = $user->profile->followers->count();
         $followingCount = $user->following->count();
-
+        $authUser = auth()->user()->id;
         return [
-            'user' => array_merge($user->toArray(), ['follows' => $follows]),
+            'user' => array_merge($user->toArray(), [
+                'follows' => $follows,
+                'friendship' => $friendship = Friend::where(function ($query) use ($authUser, $user) {
+                    $query->where('requester_id', $authUser)
+                        ->where('user_requested_id', $user->id);
+                })->orWhere(function ($query) use ($authUser, $user) {
+                    $query->where('requester_id', $user->id)
+                        ->where('user_requested_id', $authUser);
+                })->first() ?? null,
+            ]),
             'postCount' => $postCount,
             'followersCount' => $followersCount,
             'followingCount' => $followingCount
@@ -48,10 +58,10 @@ class ProfileController extends Controller
 
             $user->profile->update(array_merge(
                 $data,
-                $imageArray ?? ['image'=>'users-avatar/anon.png'],
+                $imageArray ?? ['image' => 'users-avatar/anon.png'],
             ));
             return response()->json([
-                'newAvatar' => $imageArray ?? ['image'=>'users-avatar/anon.png'],
+                'newAvatar' => $imageArray ?? ['image' => 'users-avatar/anon.png'],
             ], 200);
         } else return response()->json([
             'message' => 'You are not authorized to perform this action'

@@ -83,4 +83,10 @@ class User extends Authenticatable
         return $this->hasMany(Conversation::class, 'participant_1')
             ->orWhere('participant_2', $this->id);
     }
+    public function friends()
+    {
+        return $this->hasMany(Friend::class, 'requester_id')
+            ->where('status', 'friend')
+            ->orWhere('user_requested_id', $this->id);
+    }
 }
