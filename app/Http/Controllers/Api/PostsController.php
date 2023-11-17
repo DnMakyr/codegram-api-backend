@@ -18,24 +18,23 @@ class PostsController extends Controller
                 $query->with('profile');
             }, 'comments'])
             ->get();
+
         $suggests = User::whereNotIn('id', $users)
             ->where('id', '!=', auth()->user()->id)
             ->with('profile')
             ->inRandomOrder()
             ->limit(5)
             ->get();
-        $liked = [];
-        $likeCount = [];
+
         foreach ($posts as $post) {
-            $liked[$post->id] = auth()->user()->hasLiked($post);
-            $likeCount[$post->id] = $post->likersCount();
+            $post->liked = auth()->user()->hasLiked($post); // Assuming this method exists in the package
+            $post->likeCount = $post->likersCount(); // Assuming this method exists in the package
+            $post->commentCount = $post->comments->count();
         }
 
         return [
             'posts' => $posts,
             'suggestions' => $suggests,
-            'liked' => $liked,
-            'likeCount' => $likeCount
         ];
     }
     public function store(Request $request)
