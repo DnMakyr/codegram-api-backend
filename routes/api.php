@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\FriendController;
 use App\Http\Controllers\Api\PostsController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\ChatController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -44,4 +45,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/friend/{user}/unfriend', [FriendController::class, 'unfriend']);
 
     Route::post('/comment', [CommentController::class, 'comment']);
+    Route::post('/like/{post}', [PostsController::class, 'like']);
+    Route::post('/unlike/{post}', [PostsController::class, 'unlike']);
+
+    Route::get('/chat', [ChatController::class, 'index']);
+    Route::post('/chat/create/{user}', [ChatController::class, 'createChat']);
+
 });

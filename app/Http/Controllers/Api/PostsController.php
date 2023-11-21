@@ -52,4 +52,15 @@ class PostsController extends Controller
             'image' => $imagePath,
         ]);
     }
+
+    public function like(Post $post)
+    {
+        auth()->user()->like($post);
+        return response()->json(['success' => 'Post liked successfully']);
+    }
+    public function unlike(Post $post)
+    {
+        auth()->user()->unlike($post);
+        return response()->json(['success' => 'Post unliked successfully']);
+    }
 }
