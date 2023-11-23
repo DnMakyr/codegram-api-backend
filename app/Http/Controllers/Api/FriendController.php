@@ -34,7 +34,7 @@ class FriendController extends Controller
             }
         }
 
-        return $suggests;
+        return response()->json($suggests);
     }
     public function add(User $user)
     {
@@ -45,6 +45,7 @@ class FriendController extends Controller
         if (!auth()->user()->following->contains($user->profile)) {
             auth()->user()->following()->toggle($user->profile);
         }
+        return response()->json(['success' => 'Friend request sent successfully']);
     }
     public function cancel(User $user)
     {
@@ -55,6 +56,7 @@ class FriendController extends Controller
         if (auth()->user()->following->contains($user->profile)) {
             auth()->user()->following()->toggle($user->profile);
         }
+        return response()->json(['success' => 'Friend request cancelled successfully']);
     }
     public function accept(User $user)
     {
@@ -67,6 +69,7 @@ class FriendController extends Controller
         if (!auth()->user()->following->contains($user->profile)) {
             auth()->user()->following()->toggle($user->profile);
         }
+        return response()->json(['success' => 'Friend request accepted successfully']);
     }
     public function decline(User $user)
     {
@@ -90,5 +93,6 @@ class FriendController extends Controller
             auth()->user()->following()->toggle($user->profile);
             $user->following()->toggle(auth()->user()->profile);
         }
+        return response()->json(['success' => 'Unfriended successfully']);
     }
 }

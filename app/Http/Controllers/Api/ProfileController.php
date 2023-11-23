@@ -21,7 +21,7 @@ class ProfileController extends Controller
         $followersCount = $user->profile->followers->count();
         $followingCount = $user->following->count();
         $authUser = auth()->user()->id;
-        return [
+        return response()->json([
             'user' => array_merge($user->toArray(), [
                 'follows' => $follows,
                 'friendship' => $friendship = Friend::where(function ($query) use ($authUser, $user) {
@@ -35,7 +35,7 @@ class ProfileController extends Controller
             'postCount' => $postCount,
             'followersCount' => $followersCount,
             'followingCount' => $followingCount
-        ];
+        ]);
     }
     public function update(User $user)
     {
@@ -61,7 +61,7 @@ class ProfileController extends Controller
                 $imageArray ?? ['image' => 'users-avatar/anon.png'],
             ));
             return response()->json([
-                'newAvatar' => $imageArray ?? ['image' => 'users-avatar/anon.png'],
+                'newAvatar' => '/storage/'.auth()->user()->profile->image,
             ], 200);
         } else return response()->json([
             'message' => 'You are not authorized to perform this action'

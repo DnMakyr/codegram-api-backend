@@ -32,10 +32,10 @@ class PostsController extends Controller
             $post->commentCount = $post->comments->count();
         }
 
-        return [
+        return response()->json([
             'posts' => $posts,
             'suggestions' => $suggests,
-        ];
+        ]);
     }
     public function store(Request $request)
     {
