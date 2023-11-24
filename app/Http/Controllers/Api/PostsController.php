@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Notifications\LikeNotification;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\User;
@@ -56,6 +57,7 @@ class PostsController extends Controller
     public function like(Post $post)
     {
         auth()->user()->like($post);
+        $post->user->notify(new LikeNotification(auth()->user(), $post));
         return response()->json(['success' => 'Post liked successfully']);
     }
     public function unlike(Post $post)
