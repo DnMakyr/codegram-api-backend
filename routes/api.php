@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\PostsController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\NotificationsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -53,4 +54,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/chat/load/{conversation}', [ChatController::class, 'loadChat']);
     Route::post('/chat/send', [ChatController::class, 'sendMessage']);
 
+    Route::get('/notifications', [NotificationsController::class, 'index']);
 });
