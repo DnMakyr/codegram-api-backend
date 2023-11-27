@@ -34,9 +34,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/profile/{user}', [ProfileController::class, 'show']);
     Route::post('/profile/{user}/update', [ProfileController::class, 'update']);
+
     Route::get('/dashboard', [PostsController::class, 'show']);
     Route::get('/recommend', [FriendController::class, 'suggest']);
-    Route::post('/post', [PostsController::class, 'store']);
+    Route::post('/post/store', [PostsController::class, 'store']);
+    Route::get('/post/{post}', [PostsController::class, 'viewPost']);
+
     Route::post('/follow/{user}', [FollowController::class, 'follow']);
 
     Route::post('/friend/{user}', [FriendController::class, 'add']);

@@ -39,6 +39,20 @@ class PostsController extends Controller
             'suggestions' => $suggests,
         ]);
     }
+
+    public function viewPost(Post $post)
+    {
+        $post->load(['user' => function ($query) {
+            $query->with('profile');
+        }, 'comments' => function ($query) {
+            $query->with('user.profile');
+        }]);
+        $post->liked = auth()->user()->hasLiked($post);
+        $post->likeCount = $post->likersCount();
+        $post->commentCount = $post->comments->count();
+        return response()->json(['post' => $post]);
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([
