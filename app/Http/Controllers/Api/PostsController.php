@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Events\NotificationEvent;
 
 class PostsController extends Controller
 {
@@ -58,6 +59,7 @@ class PostsController extends Controller
     {
         auth()->user()->like($post);
         $post->user->notify(new LikeNotification(auth()->user(), $post));
+        broadcast(new NotificationEvent(auth()->user(), $post, 'like'))->toOthers();
         return response()->json(['success' => 'Post liked successfully']);
     }
     public function unlike(Post $post)

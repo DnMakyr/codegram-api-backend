@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Friend;
 use App\Models\User;
+use App\Notifications\AcceptNotification;
+use App\Notifications\FriendNotification;
 use Illuminate\Http\Request;
+use App\Events\NotificationEvent;
 
 class FriendController extends Controller
 {
@@ -45,6 +48,8 @@ class FriendController extends Controller
         if (!auth()->user()->following->contains($user->profile)) {
             auth()->user()->following()->toggle($user->profile);
         }
+        auth()->user()->notify(new FriendNotification($user));
+        broadcast(new NotificationEvent(auth()->user(), $user, 'request'))->toOthers();
         return response()->json(['success' => 'Friend request sent successfully']);
     }
     public function cancel(User $user)
@@ -69,6 +74,8 @@ class FriendController extends Controller
         if (!auth()->user()->following->contains($user->profile)) {
             auth()->user()->following()->toggle($user->profile);
         }
+        auth()->user()->notify(new AcceptNotification($user));
+        broadcast(new NotificationEvent(auth()->user(), $user, 'accepted'))->toOthers();
         return response()->json(['success' => 'Friend request accepted successfully']);
     }
     public function decline(User $user)
