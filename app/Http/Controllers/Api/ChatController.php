@@ -22,7 +22,6 @@ class ChatController extends Controller
         $conversations = Conversation::where('participant_1', Auth::user()->id)
             ->orWhere('participant_2', Auth::user()->id)
             ->with('participant_1', 'participant_1.profile', 'participant_2', 'participant_2.profile')->get();
-        event(new PusherTestEvent('Hello World'));
         return response()->json(['conversations' => $conversations]);
     }
 

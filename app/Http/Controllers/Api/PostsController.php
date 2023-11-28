@@ -29,6 +29,10 @@ class PostsController extends Controller
             ->get();
 
         foreach ($posts as $post) {
+            foreach ($post->comments as $comment) {
+                // Assuming that the Comment model has a relationship named 'user' for the commenter
+                $comment->commenter= $comment->user->username;
+            }
             $post->liked = auth()->user()->hasLiked($post); // Assuming this method exists in the package
             $post->likeCount = $post->likersCount(); // Assuming this method exists in the package
             $post->commentCount = $post->comments->count();
@@ -47,6 +51,10 @@ class PostsController extends Controller
         }, 'comments' => function ($query) {
             $query->with('user.profile');
         }]);
+        foreach ($post->comments as $comment) {
+            // Assuming that the Comment model has a relationship named 'user' for the commenter
+            $comment->commenter = $comment->user->username;
+        }
         $post->liked = auth()->user()->hasLiked($post);
         $post->likeCount = $post->likersCount();
         $post->commentCount = $post->comments->count();
