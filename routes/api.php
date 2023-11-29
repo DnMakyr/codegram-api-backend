@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\NotificationsController;
+use App\Http\Controllers\Api\SearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,7 +39,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/dashboard', [PostsController::class, 'show']);
     Route::get('/recommend', [FriendController::class, 'suggest']);
     Route::post('/post/store', [PostsController::class, 'store']);
-    Route::get('/post/{post}', [PostsController::class, 'viewPost']);
+
 
     Route::post('/follow/{user}', [FollowController::class, 'follow']);
 
@@ -59,3 +60,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/notifications', [NotificationsController::class, 'index']);
 });
+
+Route::post('/search', [SearchController::class, 'search']);
+Route::get('/post/{post}', [PostsController::class, 'viewPost']);

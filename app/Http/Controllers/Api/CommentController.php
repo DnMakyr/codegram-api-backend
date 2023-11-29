@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\CommentEvent;
 use App\Models\User;
 use App\Notifications\CommentNotification;
 use App\Http\Controllers\Controller;
@@ -22,6 +23,7 @@ class CommentController extends Controller
         $user = $comment->post->user;
         $user->notify(new CommentNotification(auth()->user(), $post, $comment));
         broadcast(new NotificationEvent(auth()->user(), $post, 'comment'))->toOthers();
+        broadcast(new CommentEvent($post, $comment))->toOthers();
         return response()->json(['success' => 'Comment posted successfully']);
     }
     public function deleteComm(Request $request){
