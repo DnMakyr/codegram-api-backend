@@ -61,5 +61,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/notifications', [NotificationsController::class, 'index']);
 });
 
-Route::post('/search', [SearchController::class, 'search']);
 Route::get('/post/{post}', [PostsController::class, 'viewPost']);
+Route::get('/search', [SearchController::class, 'search']);
