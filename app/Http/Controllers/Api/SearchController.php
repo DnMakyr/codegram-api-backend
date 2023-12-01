@@ -48,4 +48,4 @@ class SearchController extends Controller
             return response()->json(['users' => $users]);
         }
     }
-} 
+}
