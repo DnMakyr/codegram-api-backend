@@ -61,10 +61,17 @@ class ProfileController extends Controller
                 $imageArray ?? ['image' => 'users-avatar/anon.png'],
             ));
             return response()->json([
-                'newAvatar' => '/storage/'.auth()->user()->profile->image,
+                'newAvatar' => '/storage/' . auth()->user()->profile->image,
             ], 200);
         } else return response()->json([
             'message' => 'You are not authorized to perform this action'
         ], 403);
+    }
+    public function getFriends(User $user)
+    {
+        $friends = $user->friends;
+        return response()->json([
+            'friends' => $friends
+        ]);
     }
 }

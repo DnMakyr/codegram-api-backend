@@ -10,17 +10,19 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PusherTestEvent implements ShouldBroadcast
+class FriendEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $message;
+    public $sender, $user, $action;
     /**
      * Create a new event instance.
      */
-    public function __construct(string $message)
+    public function __construct($sender, $user, $action)
     {
-        $this->message = $message;
+        $this->sender = $sender;
+        $this->user = $user;
+        $this->action = $action;
     }
     /**
      * Get the channels the event should broadcast on.
@@ -30,11 +32,11 @@ class PusherTestEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel('testing'),
+            new Channel('user-' . $this->user->id),
         ];
     }
     public function broadcastAs()
     {
-        return 'test-event';
+        return 'notification';
     }
 }

@@ -31,7 +31,7 @@ class PostsController extends Controller
         foreach ($posts as $post) {
             foreach ($post->comments as $comment) {
                 // Assuming that the Comment model has a relationship named 'user' for the commenter
-                $comment->commenter= $comment->user->username;
+                $comment->commenter = $comment->user->username;
             }
             $post->liked = auth()->user()->hasLiked($post); // Assuming this method exists in the package
             $post->likeCount = $post->likersCount(); // Assuming this method exists in the package
@@ -73,13 +73,24 @@ class PostsController extends Controller
             'image' => $imagePath,
         ]);
     }
+    public function deletePost(Post $post)
+    {
+        if (auth()->user()->id !== $post->user_id) {
+            return response()->json(['error' => 'You are not authorized to delete this post']);
+        } else {
+            $post->delete();
+            return response()->json(['success' => 'Post deleted successfully']);
+        }
+    }
 
     public function like(Post $post)
     {
         auth()->user()->like($post);
-        $post->user->notify(new LikeNotification(auth()->user(), $post));
-        broadcast(new NotificationEvent(auth()->user(), $post, 'like'))->toOthers();
-        return response()->json(['success' => 'Post liked successfully']);
+        if (auth()->user()->id !== $post->user_id) {
+            $post->user->notify(new LikeNotification(auth()->user(), $post));
+            broadcast(new NotificationEvent(auth()->user(), $post, 'like'))->toOthers();
+            return response()->json(['success' => 'Post liked successfully']);
+        }
     }
     public function unlike(Post $post)
     {

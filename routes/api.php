@@ -40,6 +40,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/recommend', [FriendController::class, 'suggest']);
     Route::get('/post/{post}', [PostsController::class, 'viewPost']);
     Route::post('/post/store', [PostsController::class, 'store']);
+    Route::delete('/post/delete/{post}', [PostsController::class, 'deletePost']);
 
 
     Route::post('/follow/{user}', [FollowController::class, 'follow']);
@@ -52,6 +53,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/comment', [CommentController::class, 'comment']);
     Route::post('/comment/delete', [CommentController::class, 'deleteComm']);
+
     Route::post('/like/{post}', [PostsController::class, 'like']);
     Route::post('/unlike/{post}', [PostsController::class, 'unlike']);
 
@@ -64,3 +66,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/search', [SearchController::class, 'search']);
 });
+
+    Route::get('/friends/{user}', [ProfileController::class, 'getFriends']);
