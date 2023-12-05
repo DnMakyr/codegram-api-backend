@@ -69,9 +69,23 @@ class ProfileController extends Controller
     }
     public function getFriends(User $user)
     {
-        $friends = $user->friends;
+        $userFriends = $user->friends;
+        $friendInfo = [];
+
+        foreach ($userFriends as $userFriend) {
+            if ($user->id === $userFriend->requester_id) {
+                $friend = User::where('id', $userFriend->user_requested_id)->with('profile')->first();
+            } else {
+                $friend = User::where('id', $userFriend->requester_id)->with('profile')->first();
+            }
+
+            if ($friend) {
+                $friendInfo[] = $friend;
+            }
+        }
+
         return response()->json([
-            'friends' => $friends
+            'friends' => $friendInfo
         ]);
     }
 }

@@ -19,7 +19,7 @@ class PostsController extends Controller
             ->with(['user' => function ($query) {
                 $query->with('profile');
             }, 'comments'])
-            ->get();
+            ->paginate(3);
 
         $suggests = User::whereNotIn('id', $users)
             ->where('id', '!=', auth()->user()->id)

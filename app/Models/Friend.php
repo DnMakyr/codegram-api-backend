@@ -19,7 +19,4 @@ class Friend extends Model
     {
         return $this->belongsToMany(User::class);
     }
-    
-
-    
 }
