@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Comment;
 use App\Events\NotificationEvent;
+use App\Models\Post;
 
 class CommentController extends Controller
 {
@@ -21,14 +22,20 @@ class CommentController extends Controller
         $comment->save();
         $post = $comment->post;
         $user = $comment->post->user;
+        if ($user->id != auth()->user()->id) {
         $user->notify(new CommentNotification(auth()->user(), $post, $comment));
         broadcast(new NotificationEvent(auth()->user(), $post, 'comment'))->toOthers();
         broadcast(new CommentEvent($post, $comment))->toOthers();
+        };
         return response()->json(['success' => 'Comment posted successfully']);
     }
     public function deleteComm(Request $request){
         $comment = Comment::find($request->id);
         $comment->delete();
         return response()->json(['success' => 'Comment deleted successfully']);
+    }
+    public function getComment(Post $post){
+        $comment = $post->comments()->with('user.profile')->get();
+        return response()->json(['comment' => $comment]);
     }
 }
