@@ -35,7 +35,7 @@ class CommentController extends Controller
         return response()->json(['success' => 'Comment deleted successfully']);
     }
     public function getComment(Post $post){
-        $comment = $post->comments()->with('user.profile')->get();
-        return response()->json(['comment' => $comment]);
+        $comments = $post->comments()->with('user.profile')->get();
+        return response()->json(['comments' => $comments]);
     }
 }

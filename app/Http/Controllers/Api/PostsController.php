@@ -48,8 +48,6 @@ class PostsController extends Controller
     {
         $post->load(['user' => function ($query) {
             $query->with('profile');
-        }, 'comments' => function ($query) {
-            $query->with('user.profile');
         }]);
         // 
         $post->liked = auth()->user()->hasLiked($post);
